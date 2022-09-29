@@ -1,0 +1,113 @@
+/* You can add global styles to this file, and also import other style files */
+
+/* Importing Bootstrap SCSS file. */
+@import "~bootstrap/scss/bootstrap";
+
+/* Importing Datepicker SCSS file. */
+//@import "~ngx-bootstrap/datepicker/bs-datepicker";
+.pendingTab {
+    .nav-tabs .nav-link {
+
+        height: 70px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        border-radius: 10px;
+        box-shadow: 0 4px 24px 0 rgba(34, 41, 47, 0.1);
+        background: #fff;
+        margin-right: 10px;
+        margin-bottom: 15px;
+        color: #000;
+        white-space: nowrap;
+        min-width: 130px;
+    }
+
+    .nav-link.active {
+        border-color: #0061ff;
+        color: #0061ff;
+    }
+
+    .nav-link.active:after {
+        content: "";
+        width: 0;
+        height: 0;
+        border-width: 10px 20px 0 20px;
+        border-color: #0061ff transparent transparent transparent;
+        border-style: solid;
+        position: absolute;
+        margin-top: 80px;
+    }
+
+    .tab-content {
+        // border: 1px solid #0061FF;
+        border: unset !important;
+        border-radius: 5px;
+    }
+
+    .nav-tabs {
+        border-bottom: inherit;
+    }
+}
+
+.table td,
+.table th {
+    vertical-align: inherit !important;
+}
+
+.table td,
+.table th {
+    // padding: 5px 5px;
+    font-size: 14px;
+}
+
+.spaceBetween {
+    justify-content: space-between;
+}
+
+.justifycontencenter {
+    justify-content: center;
+}
+
+.displayFlex {
+    display: flex;
+}
+
+.flexEnd {
+    justify-content: flex-end;
+}
+
+.AlignItemCenter {
+    align-items: center;
+}
+
+.redcolor {
+    font-size: 11px;
+    color: red;
+}
+
+.mb16 {
+    margin-top: 16px;
+}
+
+.tdBg {
+    background-color: rgba(0, 0, 0, 0.03);
+}
+
+.tablePadding0 {
+    padding: 0;
+}
+
+.tablePadding0 th,
+.tablePadding0 td {
+    padding: 0 !important;
+}
+
+.form-group {
+    margin-bottom: 0px;
+}
+
+.mb28 {
+    margin-top: 28px;
+}
+.pb20{ padding-bottom: 20px;}
+.text-primary{ cursor: pointer;}

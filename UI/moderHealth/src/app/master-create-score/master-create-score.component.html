@@ -1,0 +1,503 @@
+<div class="container pendingTab">
+    <!-----------SETTINGS RULES START-------------->
+    <div class="card-header displayFlex spaceBetween">
+        <div class=" "><strong> Settings Rules </strong></div>
+
+    </div>
+    <div class="card-body">
+        <div class="row">
+
+            <div class="form-group">
+                <label for="ContactName">Settings Rule Names</label>
+                <select class="form-control" name="settingRule" [ngModel]="selSettingId" (change)="changeSettingName($event.target.value)">
+<option value="">Select Settings</option>
+<option *ngFor="let r of settingsRules_value" [value]="r.ref_no">
+  {{ r.setting_name }}
+</option>
+</select>
+            </div>
+
+
+        </div>
+    </div>
+    <!-----------SETTINGS RULES END-------------->
+    <tabset class="m-2">
+        <tab heading="Grade">
+            <form name="form" (ngSubmit)="f.form.valid && addGrade()" #f="ngForm" novalidate>
+                <div class="row mt-5 align-items-center">
+                    <div class="col-5">
+                        <div class="form-group">
+                            <label for="ContactName">Down Payment</label>
+                            <input type="text" name="grade" class="form-control" placeholder="Enter Down Payment" [(ngModel)]="gradeAddForm.description" #grade="ngModel" required [ngClass]="{ 'is-invalid': f.submitted && grade.invalid }" />
+                        </div>
+                    </div>
+                    <div class="col-2">
+                        <div class="form-group">
+                            <button type="submit" class="btn btn-outline-success mb28">
+                <i class="fas fa-plus"></i> ADD
+              </button>
+                        </div>
+                    </div>
+                </div>
+            </form>
+
+            <hr />
+
+            <div class="row">
+                <div class="col-12">
+                    <form name="form" (ngSubmit)="fes.form.valid && updategrade()" #gradeFrm="ngForm" novalidate>
+                        <table class="table table-bordered">
+                            <thead class=" ">
+                                <tr>
+                                    <th scope="col" style="width: 70px">S.No</th>
+                                    <th scope="col">Down Payment</th>
+                                    <th scope="col">Action</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr *ngFor="let d of grades; let i = index">
+                                    <th scope="row">{{ i+1 }}</th>
+
+                                    <td *ngIf="d.id != gradeeditid">{{ d.description }}</td>
+                                    <td *ngIf="d.id == gradeeditid">
+                                        <input type="text" name="description" class="form-control" placeholder="Grade" (input)="f3.description = number($event)" [(ngModel)]="f3.description" #description="ngModel" required [ngClass]="{
+                    'is-invalid': gradeFrm.submitted && description.invalid
+                  }" />
+                                    </td>
+                                    <td *ngIf="d.id != gradeeditid">
+                                        <button type="button" class="btn btn-outline-primary" (click)="gradeEdit(d)">
+                                        <i class="fa fa-pencil-square-o" aria-hidden="true"></i>
+                                      </button> &nbsp;
+                                        <button type="button" class="btn btn-outline-danger" (click)="gradeDelete(d)">
+                                        <i class="fa fa-trash" aria-hidden="true"></i>
+                                      </button>
+                                    </td>
+                                    <td *ngIf="d.id == gradeeditid">
+                                        <button type="submit" class="btn btn-info">
+                    <i class="fa fa-floppy-o" aria-hidden="true"></i>
+                  </button> &nbsp;
+                                        <button type="button" class="btn btn-outline-danger" (click)="gradeeditcolse()">
+                    <i class="fa fa-times-circle-o" aria-hidden="true"></i>
+                  </button>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </form>
+                </div>
+            </div>
+        </tab>
+        <tab heading="2D (Score Vs Income/DTI)">
+            <form name="form" (ngSubmit)="fs.form.valid && addscore()" #fs="ngForm" novalidate>
+                <div class="row mt-5 align-items-center">
+                    <div class="col-5">
+                        <div class="form-group">
+                            <label for="ContactName">From Score</label>
+                            <input type="text" name="fromScore" class="form-control" placeholder="Enter From Score" (input)="f1.fromScore = number($event)" [(ngModel)]="f1.fromScore" #fromScore="ngModel" required [ngClass]="{ 'is-invalid': fs.submitted && fromScore.invalid }" />
+                        </div>
+                    </div>
+                    <div class="col-5">
+                        <div class="form-group">
+                            <label for="ContactName">To Score</label>
+                            <input type="text" name="toScore" class="form-control" placeholder="Enter To Score" (input)="f1.toScore = number($event)" [(ngModel)]="f1.toScore" #toScore="ngModel" required [ngClass]="{ 'is-invalid': fs.submitted && toScore.invalid }" />
+                        </div>
+                    </div>
+                    <div class="col-2">
+                        <div class="form-group">
+                            <label for="ContactName">Offer Value</label>
+                            <select class="form-control" name="offerlableid" [(ngModel)]="f1.offerlableid">
+                      <option value="">Select Type</option>
+                      <option *ngFor="let r of offerlistids" [value]=r.id>{{r.offerLabel}}</option>
+                  </select>
+                        </div>
+                    </div>
+                    <div class="col-2">
+                        <div class="form-group">
+                            <button type="submit" class="btn btn-outline-success mb28">
+                <i class="fas fa-plus"></i> ADD
+              </button>
+                        </div>
+                    </div>
+                </div>
+            </form>
+
+            <hr />
+
+            <form name="form" (ngSubmit)="fi.form.valid && addincome()" #fi="ngForm" novalidate>
+                <div class="row align-items-center">
+                    <div class="col-">
+                        <div class="form-group">
+                            <label for="ContactName">Min Income</label>
+                            <input type="text" name="minIncome" class="form-control" placeholder="Enter From Income" (input)="f1.minIncome = number($event)" [(ngModel)]="f1.minIncome" #minIncome="ngModel" required [ngClass]="{ 'is-invalid': fi.submitted && minIncome.invalid }" />
+                        </div>
+                    </div>
+                    <div class="col-5">
+                        <div class="form-group">
+                            <label for="ContactName">Max Income</label>
+                            <input type="text" name="maxIncome" class="form-control" placeholder="Enter To Income" (input)="f1.maxIncome = number($event)" [(ngModel)]="f1.maxIncome" #maxIncome="ngModel" required [ngClass]="{ 'is-invalid': fi.submitted && maxIncome.invalid }" />
+                        </div>
+                    </div>
+                    <div class="col-2">
+                        <div class="form-group">
+                            <button type="submit" class="btn btn-outline-success mb28">
+                <i class="fas fa-plus"></i> ADD
+              </button>
+                        </div>
+                    </div>
+                </div>
+            </form>
+
+            <hr />
+
+            <div class="row">
+                <div class="col-6">
+                    <form name="form" (ngSubmit)="fes.form.valid && updatesocre()" #fes="ngForm" novalidate>
+                        <table class="table table-bordered">
+                            <thead class=" ">
+                                <tr>
+                                    <th scope="col">#</th>
+                                    <th scope="col">Form Score</th>
+                                    <th scope="col">To Score</th>
+                                    <th scope="col">Offer Value</th>
+                                    <!-- <th scope="col">Select Offer Value</th> -->
+                                    <th scope="col">Action</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr *ngFor="let d of scores; let i = index">
+                                    <th scope="row">{{ i + 1 }}</th>
+
+                                    <td *ngIf="d.id != scoreeditid">{{ d.fromScore }}</td>
+                                    <td *ngIf="d.id != scoreeditid">{{ d.toScore }}</td>
+                                    <td *ngIf="d.offerLabel !=null && d.id != scoreeditid">{{d.offerLabel}}</td>
+                                    <td *ngIf="d.offerLabel == null && d.id != scoreeditid">0</td>
+
+                                    <td *ngIf="d.id != scoreeditid">
+                                        <button type="button" class="btn btn-outline-primary" (click)="scoreedit(d)">
+                      <i class="fa fa-pencil-square-o" aria-hidden="true"></i>
+                    </button> &nbsp;
+                                        <button type="button" class="btn btn-outline-danger" (click)="scoredelete(d)">
+                      <i class="fa fa-trash" aria-hidden="true"></i>
+                    </button>
+                                    </td>
+                                    <td *ngIf="d.id == scoreeditid">
+                                        <input type="text" name="fromScore" class="form-control" placeholder="Enter From Score" (input)="f2.fromScore = number($event)" [(ngModel)]="f2.fromScore" #fromScore="ngModel" required [ngClass]="{
+                        'is-invalid': fes.submitted && fromScore.invalid
+                      }" />
+                                    </td>
+                                    <td *ngIf="d.id == scoreeditid">
+                                        <input type="text" name="toScore" class="form-control" placeholder="Enter To Score" (input)="f2.toScore = number($event)" [(ngModel)]="f2.toScore" #toScore="ngModel" required [ngClass]="{
+                        'is-invalid': fes.submitted && toScore.invalid
+                      }" />
+                                    </td>
+                                    <td *ngIf="d.id == scoreeditid">
+                                        <select class="form-control" name="offerValue_{{d.offerLabel}}" [(ngModel)]="f2.offerId">
+                                          <option value="0">Select Type</option>
+                                          <option *ngFor="let r of offerlistids" [value]=r.id>{{r.offerLabel}}</option>
+                                      </select>
+                                    </td>
+                                    <td *ngIf="d.id == scoreeditid">
+                                        <button type="submit" class="btn btn-info">
+                      <i class="fa fa-floppy-o" aria-hidden="true"></i>
+                    </button> &nbsp;
+                                        <button type="button" class="btn btn-outline-danger" (click)="scoreeditcolse()">
+                      <i class="fa fa-times-circle-o" aria-hidden="true"></i>
+                    </button>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </form>
+                </div>
+
+                <div class="col-6">
+                    <form name="form" (ngSubmit)="fei.form.valid && updateincome()" #fei="ngForm" novalidate>
+                        <table class="table table-bordered">
+                            <thead class=" ">
+                                <tr>
+                                    <th scope="col">#</th>
+                                    <th scope="col">Min Income</th>
+                                    <th scope="col">Max Income</th>
+                                    <th scope="col">Action</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr *ngFor="let d of incomes; let i = index">
+                                    <th scope="row">{{ i + 1 }}</th>
+                                    <td *ngIf="d.id != incomeeditid">{{ d.minIncome }}</td>
+                                    <td *ngIf="d.id != incomeeditid">{{ d.maxIncome }}</td>
+                                    <td *ngIf="d.id != incomeeditid">
+                                        <button type="button" class="btn btn-outline-primary" (click)="incomeedit(d)">
+                      <i class="fa fa-pencil-square-o" aria-hidden="true"></i>
+                    </button> &nbsp;
+                                        <button type="button" class="btn btn-outline-danger" (click)="incomedelete(d)">
+                      <i class="fa fa-trash" aria-hidden="true"></i>
+                    </button>
+                                    </td>
+                                    <td *ngIf="d.id == incomeeditid">
+                                        <input type="text" name="minIncome" class="form-control" placeholder="Enter From Income" (input)="f2.minIncome = number($event)" [(ngModel)]="f2.minIncome" #minIncome="ngModel" required [ngClass]="{
+                        'is-invalid': fei.submitted && minIncome.invalid
+                      }" />
+                                    </td>
+                                    <td *ngIf="d.id == incomeeditid">
+                                        <input type="text" name="maxIncome" class="form-control" placeholder="Enter To Income" (input)="f2.maxIncome = number($event)" [(ngModel)]="f2.maxIncome" #maxIncome="ngModel" required [ngClass]="{
+                        'is-invalid': fei.submitted && maxIncome.invalid
+                      }" />
+                                    </td>
+                                    <td *ngIf="d.id == incomeeditid">
+                                        <button type="submit" class="btn btn-info">
+                      <i class="fa fa-floppy-o" aria-hidden="true"></i>
+                    </button> &nbsp;
+                                        <button type="button" class="btn btn-outline-danger" (click)="incomeeditcolse()">
+                      <i class="fa fa-times-circle-o" aria-hidden="true"></i>
+                    </button>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </form>
+                </div>
+            </div>
+        </tab>
+        <tab heading="Offer Meta">
+            <form name="form" (ngSubmit)="foff.form.valid && addOffer()" #foff="ngForm" novalidate>
+                <div class="row mt-5 align-items-center">
+                    <div class="col-3">
+                        <div class="form-group">
+                            <label for="offerLabel">Offer Value</label>
+                            <input type="text" name="offerLabel" id="offerLabel" class="form-control" placeholder="Enter Offer Value" [(ngModel)]="offerAddForm.offerLabel" #offerLabel="ngModel" required [ngClass]="{
+                  'is-invalid': foff.submitted && offerLabel.invalid
+                }" />
+                        </div>
+                    </div>
+
+                    <div class="col-2">
+                        <div class="form-group">
+                            <button type="submit" class="btn btn-outline-success mb28">
+                <i class="fas fa-plus"></i> ADD
+              </button>
+                        </div>
+                    </div>
+                </div>
+            </form>
+
+            <hr />
+
+            <div class="row">
+                <div class="col-12">
+                    <form name="form" (ngSubmit)="foffr.form.valid && updateOffer()" #foffr="ngForm" novalidate>
+                        <table class="table table-bordered">
+                            <thead class=" ">
+                                <tr>
+                                    <th scope="col" style="width: 80px">S.No</th>
+                                    <th scope="col">Offer Value</th>
+                                    <th scope="col">Action</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr *ngFor="let d of offers; let i = index">
+                                    <th scope="row">{{ i+1 }}</th>
+
+                                    <td *ngIf="d.id != offerEditId">{{ d.offerLabel }}</td>
+                                    <td *ngIf="d.id != offerEditId">
+                                        <button type="button" class="btn btn-outline-primary" (click)="offerEdit(d)">
+                      <i class="fa fa-pencil-square-o" aria-hidden="true"></i>
+                    </button> &nbsp;
+                                        <button type="button" class="btn btn-outline-danger" (click)="offerDelete(d)">
+                      <i class="fa fa-trash" aria-hidden="true"></i>
+                    </button>
+                                    </td>
+
+                                    <td *ngIf="d.id == offerEditId">
+                                        <input type="text" name="offerLabel" id="offerLabel" class="form-control" placeholder="Enter Offer Name" [(ngModel)]="offerEditForm.offerLabel" #offerLabel="ngModel" required [ngClass]="{
+                        'is-invalid': foffr.submitted && offerLabel.invalid
+                      }" />
+                                    </td>
+
+                                    <td *ngIf="d.id == offerEditId">
+                                        <button type="submit" class="btn btn-info">
+                      <i class="fa fa-floppy-o" aria-hidden="true"></i>
+                    </button> &nbsp;
+                                        <button type="button" class="btn btn-outline-danger" (click)="offerEditClose()">
+                      <i class="fa fa-times-circle-o" aria-hidden="true"></i>
+                    </button>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </form>
+                </div>
+            </div>
+        </tab>
+        <tab heading="Offer Value">
+            <form name="form" (ngSubmit)="foffv.form.valid && addOfferValue()" #foffv="ngForm" novalidate>
+                <div class="row mt-5 align-items-center">
+                    <div class="col-3">
+                        <div class="form-group">
+                            <label for="ContactName">Offer Name</label>
+                            <select class="form-control" name="offerId" [(ngModel)]="offerValueAddForm.offerId">
+                <option value="-1">Select Value</option>
+                <option *ngFor="let r of offers" [value]="r.id">
+                  {{ r.offerLabel }}
+                </option>
+              </select>
+                        </div>
+                    </div>
+                    <div class="col-3">
+                        <div class="form-group">
+                            <label for="offerValue">Offer Value</label>
+                            <input type="text" name="offerValue" id="offerValue" class="form-control" placeholder="Enter Offer Value" [(ngModel)]="offerValueAddForm.value" #offerValue="ngModel" required [ngClass]="{
+                  'is-invalid': foffv.submitted && offerValue.invalid
+                }" />
+                        </div>
+                    </div>
+
+                    <div class="col-2">
+                        <div class="form-group">
+                            <button type="submit" class="btn btn-outline-success mb28">
+                <i class="fas fa-plus"></i> ADD
+              </button>
+                        </div>
+                    </div>
+                </div>
+            </form>
+
+            <hr />
+
+            <div class="row">
+                <div class="col-12">
+                    <form name="form" (ngSubmit)="foffr.form.valid && updateOfferValue()" #foffrv="ngForm" novalidate>
+                        <table class="table table-bordered">
+                            <thead class=" ">
+                                <tr>
+                                    <th scope="col" style="width: 80px">ID</th>
+                                    <th scope="col">Offer Name</th>
+                                    <th scope="col">value</th>
+                                    <th scope="col">Action</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr *ngFor="let d of offerValues; let i = index">
+                                    <th scope="row">{{ d.id }}</th>
+
+                                    <td *ngIf="d.id != offerValueEditId">{{ d.offerLabel }}</td>
+                                    <td *ngIf="d.id != offerValueEditId">{{ d.value }}</td>
+                                    <td *ngIf="d.id != offerValueEditId">
+                                        <button type="button" class="btn btn-outline-primary" (click)="offerValueEdit(d)">
+                      <i class="fa fa-pencil-square-o" aria-hidden="true"></i>
+                    </button> &nbsp;
+                                        <button type="button" class="btn btn-outline-danger" (click)="offerValueDelete(d)">
+                      <i class="fa fa-trash" aria-hidden="true"></i>
+                    </button>
+                                    </td>
+
+                                    <td *ngIf="d.id == offerValueEditId">
+                                        <select class="form-select" name="offerId" [(ngModel)]="offerValueEditForm.offerId">
+                      <option value="-1">Select Value</option>
+                      <option *ngFor="let r of offers" [value]="r.id">
+                        {{ r.offerLabel }}
+                      </option>
+                    </select>
+                                    </td>
+
+                                    <td *ngIf="d.id == offerValueEditId">
+                                        <input type="text" name="offerValue" id="offerValue" class="form-control" placeholder="Offer Value" [(ngModel)]="offerValueEditForm.value" #offerValue="ngModel" required [ngClass]="{
+                        'is-invalid': foffrv.submitted && offerValue.invalid
+                      }" />
+                                    </td>
+
+                                    <td *ngIf="d.id == offerValueEditId">
+                                        <button type="submit" class="btn btn-info">
+                      <i class="fa fa-floppy-o" aria-hidden="true"></i>
+                    </button> &nbsp;
+                                        <button type="button" class="btn btn-outline-danger" (click)="offerValueEditClose()">
+                      <i class="fa fa-times-circle-o" aria-hidden="true"></i>
+                    </button>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </form>
+                </div>
+            </div>
+        </tab>
+        <tab heading="Term">
+            <form name="form" (ngSubmit)="fterm.form.valid && addTerm()" #fterm="ngForm" novalidate>
+                <div class="row mt-5 align-items-center">
+                    <div class="col-3">
+                        <div class="form-group">
+                            <label for="termName">Term Name</label>
+                            <input type="text" name="termName" id="offerLabel" class="form-control" placeholder="Enter term Name" [(ngModel)]="termAddForm.description" #termName="ngModel" required [ngClass]="{ 'is-invalid': foff.submitted && termName.invalid }" />
+                        </div>
+                    </div>
+
+                    <div class="col-2">
+                        <div class="form-group">
+                            <button type="submit" class="btn btn-outline-success mb28">
+                <i class="fas fa-plus"></i> ADD
+              </button>
+                        </div>
+                    </div>
+                </div>
+            </form>
+
+            <hr />
+
+            <div class="row">
+                <div class="col-12">
+                    <form name="form" (ngSubmit)="fterme.form.valid && updateTerm()" #fterme="ngForm" novalidate>
+                        <table class="table table-bordered">
+                            <thead class=" ">
+                                <tr>
+                                    <th scope="col" style="width: 80px">ID</th>
+                                    <th scope="col">Term Name</th>
+                                    <th scope="col">Action</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr *ngFor="let d of terms; let i = index">
+                                    <th scope="row">{{ d.id }}</th>
+
+                                    <td *ngIf="d.id != termEditId">{{ d.description }}</td>
+                                    <td *ngIf="d.id != termEditId">
+                                        <button type="button" class="btn btn-outline-primary" (click)="termEdit(d)">
+                      <i class="fa fa-pencil-square-o" aria-hidden="true"></i>
+                    </button> &nbsp;
+                                        <button type="button" class="btn btn-outline-danger" (click)="termDelete(d)">
+                      <i class="fa fa-trash" aria-hidden="true"></i>
+                    </button>
+                                    </td>
+
+                                    <td *ngIf="d.id == termEditId">
+                                        <input type="text" name="termName" id="termName" class="form-control" placeholder="Term Name" [(ngModel)]="termEditForm.description" #termName="ngModel" required [ngClass]="{
+                        'is-invalid': foffr.submitted && termName.invalid
+                      }" />
+                                    </td>
+
+                                    <td *ngIf="d.id == termEditId">
+                                        <button type="submit" class="btn btn-info">
+                      <i class="fa fa-floppy-o" aria-hidden="true"></i>
+                    </button> &nbsp;
+                                        <button type="button" class="btn btn-outline-danger" (click)="termEditClose()">
+                      <i class="fa fa-times-circle-o" aria-hidden="true"></i>
+                    </button>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </form>
+                </div>
+            </div>
+        </tab>
+    </tabset>
+</div>
+
+<ng-template #messagebox>
+    <div class="modal-body text-center">
+        <button type="button" class="close pull-right" aria-label="Close" (click)="close()">
+      <span aria-hidden="true">&times;</span>
+    </button>
+        <p class="headtext">Message</p>
+        <p *ngFor="let m of message">{{ m }}</p>
+    </div>
+</ng-template>

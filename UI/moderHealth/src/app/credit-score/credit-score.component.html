@@ -1,0 +1,738 @@
+<div class="container pendingTab">
+    <!-----------SETTINGS RULES START-------------->
+    <div class="card-header displayFlex spaceBetween">
+        <div class=" "><strong> Settings Rules </strong></div>
+
+    </div>
+    <div class="card-body" *ngIf="id == null || !id">
+        <div class="row">
+
+            <div class="form-group">
+                <label for="ContactName">Settings Rule Names</label>
+                <select class="form-control" name="settingRule" [ngModel]="selSettingId" (change)="LoadRules($event.target.value)">
+<option value="">Select Settings</option>
+<option *ngFor="let r of settingsRules_value" [value]="r.ref_no">
+  {{ r.setting_name }}
+</option>
+</select>
+            </div>
+
+
+        </div>
+    </div>
+    <!-----------SETTINGS RULES END-------------->
+    <tabset class="m-2" #staticTabs>
+        <tab heading="Rules">
+            <div class="container mt-5">
+                <div class="card border">
+
+                    <div class="card-header displayFlex spaceBetween">
+                        <div class=" "><strong> Product Rules </strong></div>
+                        <div>
+                            <span class="redcolor">(Note : "S* - Incremental Stages or Types of Rules")</span
+              >
+            </div>
+          </div>
+          <div class="card-body">
+            <table class="table table-bordered">
+              <tbody>
+                <tr>
+                  <th>Id</th>
+                  <th>Rule Description</th>
+                  <th>Declined If</th>
+                  <th>Disabled</th>
+                  <!-- <th>Bypass (Pass Through)</th> -->
+                </tr>
+                <tr *ngFor="let d of LoadRules_value; let i = index">
+                  <td scope="row">R{{ i + 1 }}</td>
+                  <!-- <td>{{ d.id }}</td> -->
+                  <td
+                    class="text-primary"
+                    (click)="setLoadRules_value(d, template1)"
+                  >
+                    {{ d.description }}
+                  </td>
+                  <td>
+                    <span *ngIf="d.declinedif == 'gt'">Greater than</span
+                    ><span *ngIf="d.declinedif == 'lt'">Less than</span
+                    ><span *ngIf="d.declinedif == 'gte'"
+                      >Greater than equal to</span
+                    ><span *ngIf="d.declinedif == 'lte'"
+                      >Less than equal to</span
+                    >
+                    {{ d.value }}
+                  </td>
+                  <td>{{ d.disabled }}</td>
+                  <!-- <td>{{ d.passthru }}</td> -->
+                </tr>
+              </tbody>
+            </table>
+
+            <!-- <button type="button" class="btn btn-outline-primary" (click)="openaddproductrulemodal(template)"> Add
+                            Product Rule
+                            +</button> -->
+          </div>
+        </div>
+      </div>
+    </tab>
+    <tab heading="2D (Score Vs Income/DTI)" *ngIf="id == null || !id">
+      <form
+        name="form"
+        *ngIf="!updateform"
+        (ngSubmit)="f.form.valid && add()"
+        #f="ngForm"
+        novalidate
+      >
+        <div class="row mt-5">
+          <div class="col-12">
+            <div class="pull-right">
+              <button type="submit" class="btn btn-outline-success mb16">
+                <i class="fas fa-plus"></i> ADD
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <div class="row align-items-center">
+          <div class="col-3">
+            <div class="form-group">
+              <label for="ContactName">Score</label>
+              <select
+                class="form-control"
+                name="scoreId"
+                [(ngModel)]="f1.scoreId"
+                (change)="check()"
+              >
+                <option value="-1">Select Score</option>
+                <option *ngFor="let r of row_id" [value]="r.id">
+                  {{ r.value }}
+                </option>
+              </select>
+            </div>
+          </div>
+          <div class="col-3">
+            <div class="form-group">
+              <label for="ContactName">Income</label>
+              <select
+                class="form-control"
+                name="incomeId"
+                [(ngModel)]="f1.incomeId"
+                (change)="check()"
+              >
+                <option value="-1">Select Income</option>
+                <option *ngFor="let c of col_id" [value]="c.id">
+                  {{ c.value }}
+                </option>
+              </select>
+            </div>
+          </div>
+          <div class="col-3">
+            <div class="form-group">
+              <label for="ContactName">APR(%)</label>
+              <input
+                type="text"
+                name="apr"
+                class="form-control"
+                placeholder="Enter APR"
+                (input)="f1.apr = number($event)"
+                [(ngModel)]="f1.apr"
+                #apr="ngModel"
+                required
+                [ngClass]="{ 'is-invalid': f.submitted && apr.invalid }"
+              />
+            </div>
+          </div>
+          <div class="col-3">
+            <div class="form-group">
+              <label for="ContactName">Down Payment</label>
+              <select
+                class="form-control"
+                name="gradeId"
+                [(ngModel)]="f1.gradeId"
+              >
+                <option value="-1">Select Down Payment</option>
+                <option *ngFor="let a of grades" [value]="a.id">
+                  {{ a.description }}
+                </option>
+              </select>
+            </div>
+          </div>
+        </div>
+      </form>
+
+      <form
+        name="form"
+        *ngIf="updateform"
+        (ngSubmit)="f.form.valid && update()"
+        #f="ngForm"
+        novalidate
+      >
+        <!-- <div class="row">
+          <div class="coi-12">
+            <div class="pull-right"></div>
+          </div>
+        </div> -->
+        <div class="row mt-5 align-items-center">
+          <div class="col-3">
+            <div class="form-group">
+              <label for="ContactName">Score</label>
+              <select
+                class="form-select"
+                name="scoreId"
+                [(ngModel)]="f1.scoreId"
+                (change)="check()"
+              >
+                <option value="-1">Select Score</option>
+                <option *ngFor="let r of row_id" [value]="r.id">
+                  {{ r.value }}
+                </option>
+              </select>
+            </div>
+          </div>
+          <div class="col-3">
+            <div class="form-group">
+              <label for="ContactName">Score</label>
+              <select
+                class="form-select"
+                name="incomeId"
+                [(ngModel)]="f1.incomeId"
+                (change)="check()"
+              >
+                <option value="-1">Select Income</option>
+                <option *ngFor="let c of col_id" [value]="c.id">
+                  {{ c.value }}
+                </option>
+              </select>
+            </div>
+          </div>
+          <div class="col-2">
+            <div class="form-group">
+              <label for="ContactName">APR</label>
+              <input
+                type="text"
+                name="apr"
+                class="form-control"
+                placeholder="Enter APR"
+                (input)="f1.apr = number($event)"
+                [(ngModel)]="f1.apr"
+                #apr="ngModel"
+                required
+                [ngClass]="{ 'is-invalid': f.submitted && apr.invalid }"
+              />
+            </div>
+          </div>
+          <div class="col-2">
+            <div class="form-group">
+              <label for="ContactName">Grade</label>
+              <select
+                class="form-select"
+                name="gradeId"
+                [(ngModel)]="f1.gradeId"
+              >
+                <option *ngFor="let a of grades" [value]="a.id">
+                  {{ a.description }}
+                </option>
+              </select>
+            </div>
+          </div>
+          <div class="col-2">
+            <div class="form-group">
+              <button type="submit" class="btn btn-outline-success">
+                UPDATE
+              </button>
+            </div>
+          </div>
+        </div>
+      </form>
+
+      <hr />
+
+      <div class="row">
+        <div class="col-6">
+          <table class="text-center table table-bordered tablePadding0">
+            <tr>
+              <td rowspan="2" class="tdBg">Vantage Score Bin</td>
+              <td [attr.colspan]="col_id.length" class="tdBg">
+                Monthly Income Bin
+              </td>
+            </tr>
+            <tr>
+              <td *ngFor="let c of col_id; let i = index" class="tdBg">
+                {{ c.value }}
+              </td>
+            </tr>
+            <tr *ngFor="let r of row_id; let i = index">
+              <td>
+                {{ r.value }}
+              </td>
+              <td *ngFor="let c of col_id">
+                <section *ngFor="let d of data" (click)="editDownPayment(d)">
+                  <section
+                    *ngIf="r.id == d.scoreId && c.id == d.incomeId"
+                    [ngStyle]="{
+                      'background-color': color[d.gradeValue?.toLowerCase()]
+                    }"
+                  >
+                    {{ d.gradeValue }}
+                  </section>
+                </section>
+              </td>
+              <!-- <td *ngFor="let c of col_id; let i = index;" [class.select]="selectId == rows[r][c]['index']"
+                        (click)="selectId = rows[r][c]['index'] == selectId ? -1 : rows[r][c]['index'];"
+                        [ngStyle]="{'background-color':color[rows[r][c]['gradeValue'].toLowerCase()] }">
+                        {{rows[r][c]['gradeValue']}}
+                    </td> -->
+            </tr>
+          </table>
+        </div>
+        <div class="col-6">
+          <table class="text-center table table-bordered tablePadding0">
+            <tr>
+              <td rowspan="2" class="tdBg">Vantage Score Bin</td>
+              <td [attr.colspan]="col_id.length" class="tdBg">
+                Monthly Income Bin
+              </td>
+            </tr>
+            <tr>
+              <td *ngFor="let c of col_id; let i = index" class="tdBg">
+                {{ c.value }}
+              </td>
+            </tr>
+            <tr *ngFor="let r of row_id; let i = index">
+              <td>
+                {{ r.value }}
+              </td>
+              <td *ngFor="let c of col_id">
+                <section *ngFor="let d of data">
+                  <section
+                    *ngIf="r.id == d.scoreId && c.id == d.incomeId"
+                    [ngStyle]="{
+                      'background-color': color[d.gradeValue?.toLowerCase()]
+                    }"
+                  >
+                    {{ d.apr }}%
+                  </section>
+                </section>
+              </td>
+              <!-- <td *ngFor="let c of col_id; let i = index;" [class.select]="selectId == rows[r][c]['index']"
+                        (click)="selectId = rows[r][c]['index'] == selectId ? -1 : rows[r][c]['index'];"
+                        [ngStyle]="{'background-color':color[rows[r][c]['gradeValue'].toLowerCase()] }">
+                        {{rows[r][c]['apr']}}<span *ngIf="rows[r][c]['apr'].toString().length>0">%</span>
+                            </td> -->
+                            </tr>
+                            </table>
+                        </div>
+                    </div>
+        </tab>
+        <tab heading="Offers Config" *ngIf="id == null || !id">
+            <form name="form" *ngIf="!offerupdateform" (ngSubmit)="f.form.valid && addoffer()" #f="ngForm" novalidate>
+                <div class="row mt-5">
+                    <div class="col-12">
+                        <div class="pull-right">
+                            <button type="submit" class="btn btn-outline-success">
+                <i class="fas fa-plus"></i> ADD
+              </button>
+                        </div>
+                    </div>
+                </div>
+                <br />
+                <div class="row align-items-center">
+                    <div class="col-2">
+                        <div class="form-group">
+                            <label for="ContactName">Down Payment</label>
+                            <select class="form-control" name="gradeId_{{offer_1.gradeId}}" [(ngModel)]="offer_1.gradeId" (change)="check()">
+                <option value="-1">Select Down Payment</option>
+                <option *ngFor="let a of grades" [value]="a.id">
+                  {{ a.description }}
+                </option>
+              </select>
+                        </div>
+                    </div>
+                    <div class="col-2">
+                        <div class="form-group">
+                            <label for="ContactName">Offer Name</label>
+                            <select class="form-control" name="offerlableid_{{offer_1.offerlableid}}" [(ngModel)]="offer_1.offerlableid">
+                <option value="-1">Select Offer</option>
+                <option *ngFor="let r of offerlistids" [value]="r.id">
+                  {{ r.offerLabel }}
+                </option>
+              </select>
+                        </div>
+                    </div>
+                    <div class="col-2">
+                        <div class="form-group">
+                            <label for="ContactName">Offer Value</label>
+                            <select class="form-control" name="offerValueId" [(ngModel)]="offer_1.offerValueId" (change)="check()">
+                <option value="-1">Select Value</option>
+                <option
+                  *ngFor="let r of offerlistvalues[offer_1.offerlableid]"
+                  [value]="r.id"
+                >
+                  {{ r.value }}
+                </option>
+              </select>
+                        </div>
+                    </div>
+                    <div class="col-2">
+                        <div class="form-group">
+                            <label for="ContactName">Funding Rate</label>
+                            <input type="text" name="minAPR" class="form-control" placeholder="Enter Funding Rate" (input)="offer_1.minAPR = number($event)" [(ngModel)]="offer_1.minAPR" #minAPR="ngModel" required [ngClass]="{ 'is-invalid': f.submitted && minAPR.invalid }" />
+                        </div>
+                    </div>
+                    <div class="col-2">
+                        <div class="form-group">
+                            <label for="ContactName">Sales Price</label>
+                            <input type="text" name="maxAPR" class="form-control" placeholder="Enter Sales Price" (input)="offer_1.maxAPR = number($event)" [(ngModel)]="offer_1.maxAPR" #maxAPR="ngModel" required [ngClass]="{ 'is-invalid': f.submitted && maxAPR.invalid }" />
+                        </div>
+                    </div>
+                    <!--   <div class="col-2">
+                        <div class="form-group">
+                            <label for="ContactName">AVG APR(%)</label>
+                            <input type="text" name="avgAPR" class="form-control" placeholder="Enter AVG" (input)="offer_1.avgAPR = number($event)" [(ngModel)]="offer_1.avgAPR" #avgAPR="ngModel" required [ngClass]="{ 'is-invalid': f.submitted && avgAPR.invalid }" />
+                        </div>
+                    </div> -->
+
+                    <div class="col-2">
+                        <div class="form-group"></div>
+                    </div>
+                </div>
+            </form>
+
+            <hr />
+
+            <div class="row">
+                <div class="col-12">
+                    <table class="text-center table table-bordered">
+                        <thead class=" ">
+                            <tr>
+                                <th scope="col">#</th>
+                                <th scope="col">Down Payment</th>
+                                <th scope="col">Offer Name</th>
+                                <th scope="col">Offer Value</th>
+                                <th scope="col">Funding Rate</th>
+                                <th scope="col">Sales Price</th>
+                                <!--<th scope="col">AVG APR</th> -->
+                                <th scope="col">Action</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr *ngFor="let d of offerlistdata; let i = index">
+                                <td scope="row">{{ i + 1 }}</td>
+                                <td>{{ d.grade_description }}</td>
+                                <td>{{ d.offer_label }}</td>
+                                <td>{{ d.offer_value }}</td>
+                                <td>{{ d.min_apr }}</td>
+                                <td>{{ d.max_apr }}</td>
+                                <!--<td>{{ d.avg_apr }}%</td> -->
+                                <td><button type="button" class="btn btn-outline-danger" (click)="offerDelete(d)">
+                                  <i class="fa fa-trash" aria-hidden="true"></i>
+                                </button></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </tab>
+
+        <tab heading="Terms Config" *ngIf="id == null || !id">
+            <form name="form" *ngIf="!offerupdateform" (ngSubmit)="f.form.valid && addterm()" #f="ngForm" novalidate>
+                <div class="row mt-5 align-items-center">
+                    <div class="col-2">
+                        <div class="form-group">
+                            <label for="ContactName">Down Payment</label>
+                            <select class="form-control" name="gradeId" [(ngModel)]="term_1.gradeId" (change)="check()">
+                <option value="-1">Select Down Payment</option>
+                <option *ngFor="let a of grades" [value]="a.id">
+                  {{ a.description }}
+                </option>
+              </select>
+                        </div>
+                    </div>
+                    <div class="col-2">
+                        <div class="form-group">
+                            <label for="ContactName">Terms</label>
+                            <select class="form-control" name="termId" [(ngModel)]="term_1.termId">
+                <option value="-1">Select Terms</option>
+                <option *ngFor="let r of termlist" [value]="r.id">
+                  {{ r.description }}
+                </option>
+              </select>
+                        </div>
+                    </div>
+                    <div class="col-2">
+                        <div class="form-group">
+                            <label for="ContactName">Duration</label>
+                            <input type="text" name="termDuration" class="form-control" placeholder="Enter MIN" (input)="term_1.termDuration = number($event)" [(ngModel)]="term_1.termDuration" #termDuration="ngModel" required [ngClass]="{
+                  'is-invalid': f.submitted && termDuration.invalid
+                }" />
+                        </div>
+                    </div>
+                    <!-- <div class="col-2">
+                        <div class="form-group">
+                            <label for="ContactName">Max Payment</label>
+                            <input type="text" name="avgTermPayment" class="form-control" placeholder="Enter MAX" (input)="term_1.avgTermPayment = number($event)" [(ngModel)]="term_1.avgTermPayment" #avgTermPayment="ngModel" required [ngClass]="{
+                  'is-invalid': f.submitted && avgTermPayment.invalid
+                }" />
+                        </div>
+                    </div>
+                    <div class="col-2">
+                        <div class="form-group">
+                            <label for="ContactName">AVG Payment</label>
+                            <input type="text" name="maxTermPayment" class="form-control" placeholder="Enter AVG" (input)="term_1.maxTermPayment = number($event)" [(ngModel)]="term_1.maxTermPayment" #maxTermPayment="ngModel" required [ngClass]="{
+                  'is-invalid': f.submitted && maxTermPayment.invalid
+                }" />
+                        </div>
+                    </div> -->
+
+                    <div class="col-2">
+                        <button type="submit" class="btn btn-outline-success mb28">
+              <i class="fas fa-plus"></i> ADD
+            </button>
+                    </div>
+                </div>
+            </form>
+
+            <hr />
+
+            <div class="row">
+                <div class="col-12">
+                    <table class="text-center table table-bordered">
+                        <thead class=" ">
+                            <tr>
+                                <th scope="col">#</th>
+                                <th scope="col">Down Paymnet</th>
+                                <th scope="col">Term</th>
+                                <th scope="col">Duration</th>
+                                <!-- <th scope="col">Max Payment</th>
+                                <th scope="col">AVG Payment</th> -->
+                                <th scope="col">Action</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr *ngFor="let d of termlistdata; let i = index">
+                                <td scope="row">{{ i + 1 }}</td>
+                                <td>{{ d.gradeDesc }}</td>
+                                <td>{{ d.termDesc }}</td>
+                                <td>{{ d.termDuration }}</td>
+                                <!-- <td>{{ d.maxTermPayment }}</td>
+                                <td>{{ d.avgTermPayment }}</td> -->
+                                <td>
+                                    <button type="button" class="btn btn-outline-danger" (click)="termsDelete(d)">
+                                    <i class="fa fa-trash" aria-hidden="true"></i>
+                                  </button>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </tab>
+        <tab heading="Retrieve Offers" *ngIf="id == null || !id">
+            <form name="form" *ngIf="!offerupdateform" (ngSubmit)="f.form.valid && getoffers()" #f="ngForm" novalidate>
+                <div class="row mt-5 align-items-center">
+                    <div class="col-12">
+                        <div class="form-group">
+                            <label for="ContactName">Data</label>
+                            <textarea type="text" name="data" class="form-control" placeholder="Enter Data" [(ngModel)]="apoffers.data" #data="ngModel" required [ngClass]="{ 'is-invalid': f.submitted && data.invalid }">
+              </textarea>
+                        </div>
+                    </div>
+
+                    <div class="col-12">
+                        <div class="form-group">
+                            <button type="submit" class="btn btn-outline-success" style="margin-top: 20px">
+                Get
+              </button>
+                        </div>
+                    </div>
+                </div>
+            </form>
+
+            <hr />
+
+            <div class="row">
+                <div class="col-12">
+                    <pre>{{ apofferdata | json }}</pre>
+                </div>
+            </div>
+        </tab>
+    </tabset>
+    </div>
+
+    <ng-template #messagebox>
+        <div class="modal-body text-center">
+            <button type="button" class="close pull-right" aria-label="Close" (click)="close()">
+      <span aria-hidden="true">&times;</span>
+    </button>
+            <p class="headtext">Message</p>
+            <p *ngFor="let m of message">{{ m }}</p>
+        </div>
+    </ng-template>
+
+    <ng-template #dialogupdate2DScore>
+        <form name="form" (ngSubmit)="downpaymentfrm.form.valid && onSubmitScoreUpdate()" #downpaymentfrm="ngForm" novalidate>
+            <span aria-hidden="true">&times;</span>
+            <div class="modal-body">
+                <div class="row align-items-center">
+                    <div class="col-6">
+                        <label for="downPayment">Grade</label>
+                        <label for="ContactName">Grade</label>
+                        <select class="form-control" name="gradeId" [(ngModel)]="score2DEditData.gradeId" required>
+                            <option value="-1">Select Grade</option>
+                            <option *ngFor="let a of grades" [value]="a.id">
+                              {{ a.description }}
+                            </option>
+                        </select>
+                    </div>
+                    <div class="col-6">
+                        <label for="downPayment">Apr</label>
+                        <input type="text" name="aprRate" id="offerLabel" class="form-control" placeholder="Apr" [(ngModel)]="score2DEditData.apr" #aprRate="ngModel" required [ngClass]="{ 'is-invalid': aprRate.submitted && aprRate.invalid }" />
+                    </div>
+                    <div class="col-6">
+                        <button type="submit" class="btn btn-outline-primary">Update</button>
+                        <button type="button" class="btn btn-outline-primary" (click)="deletegradeAprDetails()">Delete</button>
+                        <button type="button" class="btn btn-outline-primary" (click)="close()">Close</button>
+                    </div>
+                </div>
+            </div>
+        </form>
+    </ng-template>
+
+    <ng-template #template>
+        <form name="form" (ngSubmit)="f.form.valid && onSubmit()" #f="ngForm" novalidate>
+            <div class="modal-content">
+                <div class="modal-header bg-primary">
+                    <h5 class="modal-title text-white">Add Product Rule</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close" (click)="close()">
+          <span aria-hidden="true">&times;</span>
+        </button>
+                </div>
+
+                <div class="modal-body">
+                    <div class="row align-items-center">
+                        <div class="col-12">
+                            <div class="form-group">
+                                <label for="ContactName">Choose Product Rule</label>
+                            </div>
+                            <select class="form-select" name="rule_id" [(ngModel)]="rulef_1.rule_id">
+              <option
+                *ngFor="let d of LoadRuleDescription_value"
+                value="{{ d.id }}"
+              >
+                {{ d.description }}
+              </option>
+            </select>
+                        </div>
+
+                        <div class="col-6">
+                            <div class="form-group">
+                                <label for="ContactName">Declined If</label>
+                            </div>
+                            <select class="form-select" name="declinedif" [(ngModel)]="rulef_1.declinedif">
+              <option value="gt">Greater Than</option>
+              <option value="gte">Greater Than, Equal To</option>
+              <option value="lt">Less Than</option>
+              <option value="lte">Less Than, Equal To</option>
+            </select>
+                        </div>
+
+                        <div class="col-6">
+                            <div class="form-group">
+                                <input type="text" name="value" class="form-control" [(ngModel)]="rulef_1.value" (input)="rulef_1.value = number($event)" #value="ngModel" required [ngClass]="{ 'is-invalid': f.submitted && value.invalid }" />
+                            </div>
+                        </div>
+
+                        <div class="col-6">
+                            <div class="form-group">
+                                <label for="ContactName">Disabled</label>
+                            </div>
+                            <select class="form-select" name="disabled" [(ngModel)]="rulef_1.disabled">
+              <option value="t">True</option>
+              <option value="f">False</option>
+            </select>
+                        </div>
+
+                        <div class="col-6"></div>
+                    </div>
+                </div>
+
+                <div class="modal-footer bg-info">
+                    <button type="submit" class="btn btn-outline-primary">Submit</button>
+                    <button type="button" class="btn btn-outline-primary" (click)="close()">
+          Close
+        </button>
+                </div>
+            </div>
+        </form>
+    </ng-template>
+
+    <ng-template #template1>
+        <form name="form" (ngSubmit)="f.form.valid && onSubmit1()" #f="ngForm" novalidate>
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Edit Product Rule</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close" (click)="close()">
+          <span aria-hidden="true">&times;</span>
+        </button>
+                </div>
+
+                <div class="modal-body">
+                    <div class="row align-items-center">
+                        <div class="col-12 pb20">
+                            <div class="form-group">
+                                <label for="ContactName">
+                <strong> {{ rulef_2.description }} </strong>
+              </label>
+                            </div>
+                        </div>
+
+                        <div class="col-6 pb20">
+                            <div class="form-group">
+                                <label for="ContactName">Declined If</label>
+                            </div>
+                            <select class="form-control" name="declinedif" [(ngModel)]="rulef_2.declinedif">
+              <option value="gt">Greater Than</option>
+              <option value="gte">Greater Than, Equal To</option>
+              <option value="lt">Less Than</option>
+              <option value="lte">Less Than, Equal To</option>
+            </select>
+                        </div>
+
+                        <div class="col-6 pb20">
+                            <div class="form-group">
+                                <label for="ContactName">&nbsp;</label>
+                                <input type="text" name="value" class="form-control" [(ngModel)]="rulef_2.value" (input)="rulef_2.value = number($event)" #value="ngModel" required [ngClass]="{ 'is-invalid': f.submitted && value.invalid }" />
+                            </div>
+                        </div>
+
+                        <div class="col-6 pb20">
+                            <div class="form-group">
+                                <label for="ContactName">Disabled</label>
+                            </div>
+                            <select class="form-control" name="disabled" [(ngModel)]="rulef_2.disabled">
+              <option value="t">True</option>
+              <option value="f">False</option>
+            </select>
+                        </div>
+
+                        <div class="col-6 pb20">
+                            <div class="form-group">
+                                <label for="ContactName">Bypass (Pass Through)</label>
+                            </div>
+                            <select class="form-control" name="passthru" [(ngModel)]="rulef_2.passthru">
+              <option value="t">True</option>
+              <option value="f">False</option>
+            </select>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="modal-footer">
+                    <button type="submit" class="btn btn-outline-primary">Submit</button>
+                    <!-- <button type="button" class="btn btn-outline-primary" (click)="close()">
+          Close
+        </button> -->
+                </div>
+            </div>
+        </form>
+    </ng-template>
